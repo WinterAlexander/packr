@@ -292,7 +292,7 @@ public class Packr {
 	}
 
 	private File searchJre(File tmp) {
-		if (tmp.getName().equals("jre") && tmp.isDirectory()
+		if(tmp.isDirectory()
 				&& (new File(tmp, "bin/java").exists() || new File(tmp, "bin/java.exe").exists())) {
 			return tmp;
 		}
