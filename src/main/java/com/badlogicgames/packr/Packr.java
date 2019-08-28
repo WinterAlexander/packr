@@ -16,13 +16,16 @@
 
 package com.badlogicgames.packr;
 
+import com.badlogicgames.packr.PackrConfig.Platform;
 import com.lexicalscope.jewel.cli.*;
 import org.zeroturnaround.zip.ZipUtil;
+import org.zeroturnaround.zip.commons.FileUtils;
 import org.zeroturnaround.zip.commons.IOUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -71,6 +74,8 @@ public class Packr {
 		copyResources(output);
 
 		PackrReduce.removePlatformLibs(output, config, removePlatformLibsFileFilter);
+
+		removeArchitectureLib(config);
 
 		System.out.println("Done!");
 	}
@@ -370,4 +375,91 @@ public class Packr {
 		}
 	}
 
+
+	private static void removeArchitectureLib(PackrConfig config) throws IOException
+	{
+		if (config.removePlatformLibs == null || config.removePlatformLibs.isEmpty())
+			return;
+
+		if(config.platform == Platform.MacOS)
+			return;
+
+		boolean is64 = config.platform.name().contains("64");
+
+		System.out.println("Removing unrelated architecture platform libs ...");
+
+		// let's remove any shared libs not used on the platform, e.g. libGDX/LWJGL natives
+		for(String classpath : config.removePlatformLibs)
+		{
+			File jar = new File(config.outDir, new File(classpath).getName());
+			File jarDir = new File(config.outDir, jar.getName() + ".tmp");
+
+			if(config.verbose)
+			{
+				if(jar.isDirectory())
+					System.out.println("  # JAR '" + jar.getName() + "' is a directory");
+				else
+					System.out.println("  # Unpacking '" + jar.getName() + "' ...");
+			}
+
+			if(!jar.isDirectory())
+				ZipUtil.unpack(jar, jarDir);
+			else
+				jarDir = jar; // run in-place for directories
+
+
+			File[] files = jarDir.listFiles();
+
+			if(files != null)
+				for(File file : files)
+				{
+					if(!isLib(file))
+						continue;
+
+					if(is64 && !file.getName().contains("64") || !is64 && file.getName().contains("64"))
+					{
+						if(config.verbose)
+							System.out.println("  # Removing '" + file.getPath() + "'");
+
+						deleteFile(file);
+					}
+				}
+
+			if(!jar.isDirectory())
+			{
+				if(config.verbose)
+					System.out.println("  # Repacking '" + jar.getName() + "' ...");
+
+				long beforeLen = jar.length();
+
+				deleteFile(jar);
+
+				ZipUtil.pack(jarDir, jar);
+				FileUtils.deleteDirectory(jarDir);
+
+				long afterLen = jar.length();
+				if(config.verbose)
+					System.out.println("  # " + beforeLen / 1024 + " kb -> " + afterLen / 1024 + " kb");
+			}
+		}
+	}
+
+	private static boolean isLib(File file)
+	{
+		String name = file.getName().toLowerCase(Locale.ENGLISH);
+
+		return name.endsWith(".dll") || name.endsWith(".so") || name.endsWith("dylib");
+	}
+
+	/**
+	 * Deletes specified file
+	 * @param file file to delete
+	 *
+	 * @throws IOException if an I/O error occurs
+	 */
+	public static void deleteFile(File file) throws IOException
+	{
+		if(!file.delete())
+			throw new IOException("Couldn't delete file " + file.getAbsolutePath());
+	}
 }
