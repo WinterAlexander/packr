@@ -14,8 +14,9 @@
 		"jre/DISCLAIMER",
 		"jre/release",
 		"jre/conf/",
-		"jre/include"
-	  ]
+		"jre/include",
+		"jre/man",
+		"jre/lib/client" 
 	},
 	 {
 		  "platform": "windows",
