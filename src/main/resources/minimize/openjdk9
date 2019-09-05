@@ -16,7 +16,8 @@
 		"jre/conf/",
 		"jre/include",
 		"jre/man",
-		"jre/lib/client" 
+		"jre/lib/client"
+		] 
 	},
 	 {
 		  "platform": "windows",
