@@ -1,0 +1,1 @@
+gradle publishToMavenLocal -Psigning.secretKeyRingFile=~/.gnupg/secring.gpg -Psigning.password=secret -Psigning.keyId=0A9F86F7 -Psigning.gnupg.keyName=0A9F86F7
