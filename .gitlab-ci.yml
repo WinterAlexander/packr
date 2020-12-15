@@ -1,0 +1,64 @@
+stages:
+  - publish_launcher
+  - build
+  - publish
+
+publishWindowsExecutable:
+  stage: publish_launcher
+  tags:
+    - windows
+  script:
+    - cmd.exe "/c gradlew --no-daemon -i --no-build-cache clean PackrLauncher:publish"
+
+publishLinuxExecutable:
+  stage: publish_launcher
+  tags:
+    - ubuntu
+  script:
+    - ./gradlew --no-daemon -i --no-build-cache clean PackrLauncher:publish
+
+publishOsxExecutable:
+  stage: publish_launcher
+  tags:
+    - osx
+  script:
+    - ./gradlew --no-daemon -i --no-build-cache clean PackrLauncher:publish
+
+buildWindows:
+  stage: build
+  needs: [ "publishWindowsExecutable", "publishLinuxExecutable", "publishOsxExecutable" ]
+  tags:
+    - windows
+  script:
+    - cmd.exe "/c gradlew --no-daemon -i --no-build-cache --refresh-dependencies clean build"
+  artifacts:
+    when: always
+    reports:
+      junit: ./**/build/test-results/test/**/TEST-*.xml
+
+buildMac:
+  stage: build
+  needs: [ "publishWindowsExecutable", "publishLinuxExecutable", "publishOsxExecutable" ]
+  tags:
+    - osx
+  script:
+    - ./gradlew --no-daemon -i --no-build-cache --refresh-dependencies clean build
+  artifacts:
+    when: always
+    reports:
+      junit: ./**/build/test-results/test/**/TEST-*.xml
+
+publishLinux:
+  stage: publish
+  needs: [ "publishWindowsExecutable", "publishLinuxExecutable", "publishOsxExecutable" ]
+  tags:
+    - ubuntu
+  script:
+    - ./gradlew --no-daemon -i --no-build-cache --refresh-dependencies clean build publish
+  artifacts:
+    when: always
+    reports:
+      junit: ./**/build/test-results/test/**/TEST-*.xml
+
+after_script:
+  - echo "End CI"
