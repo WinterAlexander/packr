@@ -523,10 +523,9 @@ public class Packr {
 		  }
 	 }
 
-
-	private static void removeArchitectureLib(PackrConfig config) throws IOException
-	{
-		if (config.removePlatformLibs == null || config.removePlatformLibs.isEmpty())
+	 private static void removeArchitectureLib(PackrConfig config) throws IOException
+	 {
+	    if(config.removePlatformLibs == null || config.removePlatformLibs.isEmpty())
 			return;
 
 		if(config.platform == Platform.MacOS)

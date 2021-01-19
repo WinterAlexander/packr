@@ -20,6 +20,9 @@
 		"platform": "*",
 		"paths": [
 			"jre/lib/rhino.jar"
+			"jre/legal/*",
+			"jre/man/*",
+			"jre/release"
 		]
 	},
 	{
@@ -27,6 +30,24 @@
         "paths": [
 			"jre/bin/*.exe",
 			"jre/bin/client"
+        ]
+	},
+	{
+        "platform": "linux",
+        "paths": [
+			"jre/bin/jaotc",
+			"jre/bin/jfr",
+			"jre/bin/jjs",
+			"jre/bin/jrunscript",
+			"jre/bin/keytool",
+			"jre/bin/pack200",
+			"jre/bin/rmid",
+			"jre/bin/rmiregistry",
+			"jre/bin/unpack200",
+			"jre/lib/jfr",
+			"jre/lib/security",
+			"jre/server/Xusage.txt",
+			"jre/"
         ]
 	}]
 }
