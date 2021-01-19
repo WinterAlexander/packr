@@ -91,7 +91,7 @@ dependencies {
    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
    runtimeOnly("org.apache.logging.log4j:log4j-core:$log4jVersion")
 
-   val pomVersion = "3.0.1"
+   val pomVersion = "3.0.2"
 
    // Packr launcher executables
    add(packrLauncherMavenRepositoryExecutables.name, "com.badlogicgames.packr:packrLauncher-linux-x86-64:$pomVersion") {

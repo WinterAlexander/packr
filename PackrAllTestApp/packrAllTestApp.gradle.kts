@@ -250,7 +250,7 @@ val jdkArchiveDirectory: Path = if (jdkArchiveProperty == null) {
 /**
  * The path to JAVA_HOME
  */
-val javaHomePath: String = Jvm.current().jre?.homeDir?.absolutePath ?: Jvm.current().javaHome.absolutePath
+val javaHomePath: String = Jvm.current().javaHome.absolutePath
 
 /**
  *  Run libGdx Packr which creates minimized JREs and platform specific executables for running PackrAllTestApp.
