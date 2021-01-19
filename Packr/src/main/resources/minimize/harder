@@ -19,7 +19,7 @@
 	"remove": [{
 		"platform": "*",
 		"paths": [
-			"jre/lib/rhino.jar"
+			"jre/lib/rhino.jar",
 			"jre/legal/*",
 			"jre/man/*",
 			"jre/release"
